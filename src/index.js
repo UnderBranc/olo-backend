@@ -1,6 +1,9 @@
 const fastify = require('fastify')()
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
+const Env = require('../env-config')
+
+fastify.register(require('fastify-multipart'));
 
 //enables CORS
 fastify.register(require('fastify-cors'), {
@@ -29,7 +32,7 @@ fastify.register(require('fastify-swagger'), {
 			description: 'Documentation for all the endpoints implemented by OLO backend',
 			version: '0.1.0'
 		},
-		host: 'localhost:3000',
+		host: `localhost:${Env.port}`,
 		schemes: ['http'],
 		consumes: ['application/json'],
 		produces: ['application/json'],
@@ -41,15 +44,27 @@ fastify.register(require('fastify-swagger'), {
 })
 
 fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes')
+    dir: path.join(__dirname, 'routes'),
+    dirNameRoutePrefix: true
 })
 
+fastify.register(require('fastify-postgres'), {
+    connectionString: Env.connectionString
+  })
+
+//limit requests from one IP
+fastify.register(require('fastify-rate-limit'), {
+	max: 100,
+	allowList: ['127.0.0.1'],
+	timeWindow: '1 minute'
+});
+
 //run server and listen on port 3000 for requests, if err then shutdown
-fastify.listen(3000, (err) => {
+fastify.listen(Env.port, (err) => {
     if (err) {
         console.log(err)
         process.exit(1)
     } else {
-        console.log('Server is up on port 3000...')
+        console.log(`Server is up on port ${Env.port}...`)
     }
 })
