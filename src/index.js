@@ -13,11 +13,11 @@ fastify.register(require('fastify-cors'), {
    methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE']
 })
 
-// //allows serving static image files from url
-// fastify.register(require('fastify-static'), {
-//   root: path.join(__dirname, 'data/img'),
-//   prefix: '/img', // optional: default '/'
-// })
+//allows serving static image files from url
+fastify.register(require('fastify-static'), {
+  root: path.join(__dirname, '../data'),
+  prefix: '/img/'
+})
 
 //allows accepting of file uploads to server
 // fastify.addContentTypeParser('*', function (req, done) {
