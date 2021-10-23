@@ -1,5 +1,7 @@
-const stream = require('stream');
-const fs = require('fs');
+const { pipeline } = require('stream')
+const util = require('util')
+const fs = require('fs');;
+const pump = util.promisify(pipeline);
 const crypto = require('crypto');
 const mime = require('mime-types');
 
@@ -39,20 +41,21 @@ async function app(fastify) {
         let hash = crypto.createHash('md5').update(id).digest('hex')
         const filename = `${hash.substring(0,15)}.` + mime.extension(image.mimetype)
         const dir = 'data/';
-        stream.pipeline(                                 					   //store initial file to specified directory
-            image.file,
-            fs.createWriteStream(`${dir}/${filename}`),
-            (err) => {
-                if(err){
-                    console.log('Error during writing file, deleting...');
-                    fs.unlinkSync(`${dir}/${filename}`);      					//delete file if error occured
-                    return reply.code(400).send(new Error('Error during writing file'));
-                }
-                else{
-                    console.log(`File stored to ${dir}/${filename}`);
-                }
-            }
-        );
+        // pipeline(                                 					   //store initial file to specified directory
+        //     image.file,
+        //     fs.createWriteStream(`${dir}/${filename}`),
+        //     (err) => {
+        //         if(err){
+        //             console.log('Error during writing file, deleting...');
+        //             fs.unlinkSync(`${dir}/${filename}`);      					//delete file if error occured
+        //             return reply.code(400).send(new Error('Error during writing file'));
+        //         }
+        //         else{
+        //             console.log(`File stored to ${dir}/${filename}`);
+        //         }
+        //     }
+        // );
+        await pump(image.file, fs.createWriteStream(`${dir}/${filename}`));
         fastify.pg.transact(async client => {
                 const { rows } = await client.query(
                     'SELECT id FROM notifications WHERE id = $1', [id]
