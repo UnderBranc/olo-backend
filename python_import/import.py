@@ -1,13 +1,18 @@
 import pandas as pd
 from psycopg2.extras import RealDictCursor
 import psycopg2
+import random
 
 df = pd.read_csv("part_data.csv")
 conn = psycopg2.connect("dbname=Climathon user=postgres password=postgres host=localhost port=5433")
 cur = conn.cursor()
 
+binTypes = ['BRO', 'Gastro', 'KBRO', 'Odpad z čistenia ulic', 'Odpad zo ZZ',
+       'Papier', 'Plast', 'Sklo', 'Zmiešaný odpad']
+
+c_type = random.choice(binTypes)
 rows = zip(df.hash,df.Objem, df['Materiál nádoby'],df['KU - městská část'],df['KU - městský obvod'],
-           df['KU - ulice'],df['lat'],df['long'],df['KU - číslo orientační'],df['Název stanoviště'],df['Číslo stanoviště'],df['Typ odpadu'],
+           df['KU - ulice'],df['lat'],df['long'],df['KU - číslo orientační'],df['Název stanoviště'],df['Číslo stanoviště'],c_type,
            df['Kód nádoby'],df['Počet nádob'],df['Rajón'],df['T1'],df['T2'],df['T3'],df['T4'],df['Provozovna'])
 
 
