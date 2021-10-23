@@ -32,7 +32,9 @@ async function dashboard(fastify) {
         //get a list of all bins
         const client = await fastify.pg.connect()
         const { rows } = await client.query(
-          'SELECT * FROM notifications as n JOIN bins as b on n.bin_id = b.id WHERE status = \'PENDING\''
+            `SELECT n.bin_id, sum(n.severity) as severity, b.volume_in_litres, b.city_part, b.street, b.orientation_number, b.lat, b.lng, b.volume_in_litres, b.material, b.waste_type, b.establishment, count(*) as occurences
+            FROM notifications as n JOIN bins as b on n.bin_id = b.id WHERE status = 'PENDING' 
+            GROUP BY n.bin_id, b.volume_in_litres, b.city_part, b.street, b.orientation_number, b.lat, b.lng, b.volume_in_litres, b.material, b.waste_type, b.establishment;`
         )
         client.release()
         return reply.send(rows);
