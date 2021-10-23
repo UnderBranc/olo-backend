@@ -32,7 +32,7 @@ async function dashboard(fastify) {
         //get a list of all bins
         const client = await fastify.pg.connect()
         const { rows } = await client.query(
-            `SELECT n.bin_id, sum(n.severity) as severity, b.volume_in_litres, b.city_part, b.street, b.orientation_number, b.lat, b.lng, b.volume_in_litres, b.material, b.waste_type, b.establishment, count(*) as occurences
+            `SELECT count(n.image) as image_count, n.bin_id, sum(n.severity), b.volume_in_litres, b.city_part, b.street, b.orientation_number, b.lat, b.lng, b.volume_in_litres, b.material, b.waste_type, b.establishment, count(*) as occurences
             FROM notifications as n JOIN bins as b on n.bin_id = b.id WHERE status = 'PENDING' 
             GROUP BY n.bin_id, b.volume_in_litres, b.city_part, b.street, b.orientation_number, b.lat, b.lng, b.volume_in_litres, b.material, b.waste_type, b.establishment;`
         )
@@ -51,6 +51,19 @@ async function dashboard(fastify) {
         client.release()
         return reply.send(rows);
     })
+
+    fastify.get('/notifications/:id/images', async(request, reply) => {
+        const {
+            id
+        } = request.params;
+        const client = await fastify.pg.connect()
+        const { rows } = await client.query(
+            `SELECT image FROM notifications as n WHERE n.bin_id = $1 AND image IS NOT NULL;`, [id]
+        )
+        client.release()
+        return reply.send(rows);
+    })
+
 }
 
 module.exports = dashboard
