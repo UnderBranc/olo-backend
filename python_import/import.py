@@ -13,7 +13,7 @@ rows = zip(df.hash,df.Objem, df['Materiál nádoby'],df['KU - městská část']
 
 cur.executemany("""
  INSERT INTO bins(id, volume_in_litres, material, city_part, city_district, street, lat, lng, orientation_number, station_name, station_number, waste_type, bin_code, bin_count, region, t1, t2, t3, t4, establishment)
- (%s, %s,%s,%s,%s""", rows)
+ (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s""", rows)
 
 
 conn.commit()
