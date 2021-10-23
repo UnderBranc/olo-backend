@@ -25,7 +25,7 @@ fastify.register(require('fastify-cors'), {
 // })
 
 fastify.register(require('fastify-swagger'), {
-	routePrefix: '/api/docs',
+	routePrefix: '/docs',
 	swagger: {
 		info: {
 			title: 'Swagger for OLO backend',
@@ -45,8 +45,7 @@ fastify.register(require('fastify-swagger'), {
 
 fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
-    dirNameRoutePrefix: true,
-    options: { prefix: '/api' }
+    dirNameRoutePrefix: true
 })
 
 fastify.register(require('fastify-postgres'), {
