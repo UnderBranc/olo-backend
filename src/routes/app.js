@@ -32,7 +32,7 @@ async function app(fastify) {
             id //id in database
         } = request.params;
         console.log(request.file)
-        const options = { limits: { files: 1, fileSize: 30000000, fieldSize: 30000000 /*max 30mb*/ } };
+        const options = { limits: { files: 1 } };
 		const image = await request.file(options);
     
         //return if success or some sort of error happened

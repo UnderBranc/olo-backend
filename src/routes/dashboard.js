@@ -32,7 +32,7 @@ async function dashboard(fastify) {
         //get a list of all bins
         const client = await fastify.pg.connect()
         const { rows } = await client.query(
-          'SELECT * FROM notifications'
+          'SELECT * FROM notifications as n JOIN bins as b on n.bin_id = b.id WHERE status = \'PENDING\''
         )
         client.release()
         return reply.send(rows);

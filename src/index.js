@@ -1,6 +1,4 @@
-const fastify = require('fastify')({
-    bodyLimit: 30000000
-})
+const fastify = require('fastify')()
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
 const Env = require('../env-config')
