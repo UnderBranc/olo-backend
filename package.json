@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/UnderBranc/olo-backend#readme",
   "dependencies": {
+    "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "fastify": "^3.22.1",
     "fastify-autoload": "^3.9.0",
