@@ -1,6 +1,7 @@
 const stream = require('stream');
 const fs = require('fs');
 const crypto = require('crypto');
+const mime = require('mime-types');
 
 async function app(fastify) {
     
@@ -36,7 +37,7 @@ async function app(fastify) {
     
         //return if success or some sort of error happened
         let hash = crypto.createHash('md5').update(id).digest('hex')
-        const filename = `${hash.substring(0,15)}` + image.mimetype
+        const filename = `${hash.substring(0,15)}.` + mime.extension(image.mimetype)
         const dir = 'data/';
         stream.pipeline(                                 					   //store initial file to specified directory
             image.file,
