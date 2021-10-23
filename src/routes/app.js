@@ -36,21 +36,12 @@ async function app(fastify) {
 		const image = await request.file(options);
     
         //return if success or some sort of error happened
-
-        const filename = `${crypto.createHash('sha1').update(id).digest('hex')}` + '.png';
+        let hash = crypto.createHash('md5').update(id).digest('hex')
+        const filename = `${hash.substring(0,15)}` + '.png'
         const dir = 'data/';
         stream.pipeline(                                 					   //store initial file to specified directory
             image.file,
             fs.createWriteStream(`${dir}/${filename}`),
-            fastify.pg.transact(async client => {
-                const { rows } = await client.query(
-                    'SELECT id FROM notification WHERE id = $1', [id]
-                )
-                if(!rows.length)
-                    return reply.code(400).send(`No notifiaction with ID: [ ${id} ] is registered in our system.`);
-                await client.query('UPDATE notifications SET image = $1 where id = $2', [filename, id]);
-                return reply.code(200).send("Image successfully uploaded. Thank you for helping the ecosystem.")
-            }),
             (err) => {
                 if(err){
                     console.log('Error during writing file, deleting...');
@@ -62,6 +53,17 @@ async function app(fastify) {
                 }
             }
         );
+        fastify.pg.transact(async client => {
+                const { rows } = await client.query(
+                    'SELECT id FROM notifications WHERE id = $1', [id]
+                )
+                if(!rows.length){
+                   reply.code(400).send(`No notifiaction with ID: [ ${id} ] is registered in our system.`);
+                   throw new Error('Invalid ID');
+                }
+                await client.query('UPDATE notifications SET image = $1 where id = $2', [filename, id]);
+                return reply.code(200).send("Image successfully uploaded. Thank you for helping the ecosystem.")
+        })
         //verify the image with AI
     })
 
