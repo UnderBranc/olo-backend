@@ -28,6 +28,18 @@ async function dashboard(fastify) {
         return reply.send(rows);
     })
 
+    fastify.get('/bins/:id/images', async(request, reply) => {
+        const {
+            id
+        } = request.params;
+        const client = await fastify.pg.connect()
+        const { rows } = await client.query(
+            `SELECT image FROM notifications as n WHERE n.bin_id = $1 AND image IS NOT NULL;`, [id]
+        )
+        client.release()
+        return reply.send(rows);
+    })
+
     fastify.get('/notifications',async(request, reply) => {
         //get a list of all bins
         const client = await fastify.pg.connect()
@@ -47,18 +59,6 @@ async function dashboard(fastify) {
         const client = await fastify.pg.connect()
         const { rows } = await client.query(
           'SELECT * FROM notifications WHERE id = $1', [id]
-        )
-        client.release()
-        return reply.send(rows);
-    })
-
-    fastify.get('/notifications/:id/images', async(request, reply) => {
-        const {
-            id
-        } = request.params;
-        const client = await fastify.pg.connect()
-        const { rows } = await client.query(
-            `SELECT image FROM notifications as n WHERE n.bin_id = $1 AND image IS NOT NULL;`, [id]
         )
         client.release()
         return reply.send(rows);
