@@ -20,9 +20,9 @@ fastify.register(require('fastify-static'), {
 })
 
 //allows accepting of file uploads to server
-// fastify.addContentTypeParser('*', function (req, done) {
-//   done(null, req)
-// })
+fastify.addContentTypeParser('*', function (req, body, done) {
+  done()
+})
 
 fastify.register(require('fastify-swagger'), {
 	routePrefix: '/docs',
