@@ -60,4 +60,4 @@ async function app(fastify) {
 }
 
 module.exports = app
-module.exports.autoPrefix = '/app'
+module.exports.autoPrefix = '/frontend'
