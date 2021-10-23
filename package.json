@@ -4,7 +4,8 @@
   "description": "Backend for the waste collection route optimization. Project for Climathon 2021.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,15 @@
   "bugs": {
     "url": "https://github.com/UnderBranc/olo-backend/issues"
   },
-  "homepage": "https://github.com/UnderBranc/olo-backend#readme"
+  "homepage": "https://github.com/UnderBranc/olo-backend#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "fastify": "^3.22.1",
+    "fastify-autoload": "^3.9.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-swagger": "^4.12.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
 }
