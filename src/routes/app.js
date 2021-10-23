@@ -31,13 +31,12 @@ async function app(fastify) {
         const {
             id //id in database
         } = request.params;
-        console.log(request.file)
         const options = { limits: { files: 1 } };
 		const image = await request.file(options);
     
         //return if success or some sort of error happened
         let hash = crypto.createHash('md5').update(id).digest('hex')
-        const filename = `${hash.substring(0,15)}` + '.png'
+        const filename = `${hash.substring(0,15)}` + image.mimetype
         const dir = 'data/';
         stream.pipeline(                                 					   //store initial file to specified directory
             image.file,
